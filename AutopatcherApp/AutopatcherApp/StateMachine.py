@@ -20,20 +20,22 @@ class StateMachine(object):
     #Reference variables
     mMainUIWindow = None
     mMain = None
+    mSystemIO = None
 
     #Class Contructor
-    def __init__(self, pMainWindow = None, pMain = None):
+    def __init__(self, pMainWindow = None, pMain = None, pSystemIO = None):
         self.mMainUIWindow = pMainWindow
         self.mMain = pMain
+        self.mSystemIO = pSystemIO
         self.mCurrentProcess = Process.START
         self.mStateCounter = 0
 
         self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, "Auto State One", 4))
-        self.mStateList.append(Manual(self.mMainUIWindow, self.mMain, "Manual State One"))
+        self.mStateList.append(Manual(self.mMainUIWindow, self.mMain, "Manual State One", self.mSystemIO))
         self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, "Auto State Two", 2))
-        self.mStateList.append(Manual(self.mMainUIWindow, self.mMain, "Manual State Two"))
+        self.mStateList.append(Manual(self.mMainUIWindow, self.mMain, "Manual State Two", self.mSystemIO))
         self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, "Auto State Three", 3))
-        self.mStateList.append(Manual(self.mMainUIWindow, self.mMain, "Manual State Three"))
+        self.mStateList.append(Manual(self.mMainUIWindow, self.mMain, "Manual State Three", self.mSystemIO))
 
         print('StateMachine Initialized With ' + str(len(self.mStateList)) + ' States')
 

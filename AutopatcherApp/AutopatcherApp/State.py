@@ -4,11 +4,13 @@ class State(object):
     mStateName = "State"
     mMainUIWindow = None
     mMain = None
+    mSystemIO = None
 
-    def __init__(self, pMainWindow, pMain, pName):
+    def __init__(self, pMainWindow = None, pMain = None, pName = "State", pSystemIO = None):
         self.mStateName = pName
         self.mMainUIWindow = pMainWindow
         self.mMain = pMain
+        self.mSystemIO = pSystemIO
         print('State Initialized')
 
     #State Start Process

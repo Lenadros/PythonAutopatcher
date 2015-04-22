@@ -19,15 +19,18 @@ class Automatic(State):
 
     def Start(self):
         super().Start()
+        #Start local timer
         self.mStartTime = time.time()
         self.mMainUIWindow.SendMessage("Please Wait " + str(self.mSetTime) + " Second(s)")
 
     def Update(self):
         super().Update()
+        #Update timer
         self.mEndTime = time.time()
         self.mElapsedTime = self.mEndTime - self.mStartTime
         self.mMainUIWindow.DisplayData(1, self.mElapsedTime)
         
+        #If timer has reached the required time, return 1
         if(self.mElapsedTime >= self.mSetTime):
             return 1
 
@@ -35,6 +38,7 @@ class Automatic(State):
 
     def End(self):
         super().End()
+        #Set global variable to be read by other states
         self.mMain.mBigTime = self.mSetTime
 
 
