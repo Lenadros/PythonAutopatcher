@@ -30,9 +30,9 @@ class StateMachine(object):
         self.mCurrentProcess = Process.START
         self.mStateCounter = 0
 
-        self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, self.mSystemIO, "Auto State One", 50000))
+        self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, self.mSystemIO, "Auto State One", 10000))
         self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, self.mSystemIO, "Auto State Two", -60000))
-        self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, self.mSystemIO, "Auto State Three", 100000))
+        self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, self.mSystemIO, "Auto State Three", 20000))
 
         print('StateMachine Initialized With ' + str(len(self.mStateList)) + ' States')
 
