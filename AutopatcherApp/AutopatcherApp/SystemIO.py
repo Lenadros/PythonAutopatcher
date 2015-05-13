@@ -16,7 +16,6 @@ class SystemIO(threading.Thread):
     def FindAvaliblePorts(self):
         AllPorts = ['COM' + str(i + 1) for i in range(256)]
         PortList = []
-
         for Port in AllPorts:
             try:
                 mSerialPort = serial.Serial(Port)
@@ -32,6 +31,12 @@ class SystemIO(threading.Thread):
         self.mSerialPort = serial.Serial(self.mMainWindow.GetSelectedComPort())
         print(self.mMainWindow.GetSelectedComPort() + " is opened")
 
-    def MoveZ(self):
-        self.mSerialPort.write("ABSZ 100\n")
+    def SerialWrite(self, pCommand):
+        pCommand = pCommand + "\r\n"
+        print(pCommand)
+        self.mSerialPort.write(bytes(pCommand, 'UTF-8'))
+
+    def SerialReport(self):
+        self.mSerialPort.write(b"S\r\n")
+        return self.mSerialPort.read().decode()
 

@@ -6,7 +6,7 @@ class State(object):
     mMain = None
     mSystemIO = None
 
-    def __init__(self, pMainWindow = None, pMain = None, pName = "State", pSystemIO = None):
+    def __init__(self, pMainWindow = None, pMain = None, pSystemIO = None, pName = "State"):
         self.mStateName = pName
         self.mMainUIWindow = pMainWindow
         self.mMain = pMain

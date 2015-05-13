@@ -6,8 +6,8 @@ class Manual(State):
     mNumClicks = 0
     mCounter = 0
 
-    def __init__(self, pMainWindow = None, pMain = None, pName = "", pSystemIO = None):
-        super().__init__(pMainWindow, pMain, pName, pSystemIO)
+    def __init__(self, pMainWindow = None, pMain = None,  pSystemIO = None, pName = ""):
+        super().__init__(pMainWindow, pMain, pSystemIO, pName)
         print('Created: Manual State')
 
     def Start(self):
@@ -23,7 +23,7 @@ class Manual(State):
         #Wait for event from UI
         print('ManualState: Waiting for button press')
         self.mMain.mZEvent.wait()
-        self.mSystemIO.MoveZ()
+        #self.mSystemIO.MoveZ()
         print('ManualState: Got button press')
         self.mCounter += 1
         self.mMainUIWindow.DisplayData(0, self.mCounter)
