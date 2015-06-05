@@ -2,15 +2,14 @@ import sys
 import signal
 import os
 from StateMachine import StateMachine
-from PyQt5 import uic
-from PyQt5.QtWidgets import QMainWindow
+from PyQt4 import QtCore, QtGui, uic
 
-class MainUI(QMainWindow):
+class MainUI(QtGui.QMainWindow):
 
     mMain = None
 
     def __init__(self, parent = None):
-        QMainWindow.__init__(self, parent)
+        QtGui.QMainWindow.__init__(self, parent)
         self.ui = uic.loadUi('D:\Autopatcher Python\PythonAutopatcher\MainUI.ui',self)
         self.show()
         self.ui.pushButton.clicked.connect(self.OnNextButtonClicked)

@@ -1,16 +1,23 @@
+import os
 import threading
 import serial
-
+import numpy as np
+import cv2
+import ctypes
 
 class SystemIO(threading.Thread):
 
     mSerialPort = None
     mMainWindow = None
+    CameraDLL = None
 
     def __init__(self, group = None, target = None, name = None, args = (), kwargs = None, daemon = None, pMainWindow = None):
         threading.Thread.__init__(self)
         self.mMainWindow = pMainWindow
-        self.FindAvaliblePorts()
+
+    def run(self):
+        while(1):
+            x = 1
     
     #List avalible ports on the computer
     def FindAvaliblePorts(self):
@@ -28,13 +35,14 @@ class SystemIO(threading.Thread):
 
     #Open GUI selected port
     def OpenPort(self):
-        self.mSerialPort = serial.Serial(self.mMainWindow.GetSelectedComPort())
-        print(self.mMainWindow.GetSelectedComPort() + " is opened")
+        Port = self.mMainWindow.GetSelectedComPort()[3:]
+        self.mSerialPort = serial.Serial(int(Port) - 1)
+        print(Port + " is opened")
 
     def SerialWrite(self, pCommand):
         pCommand = pCommand + "\r\n"
         print(pCommand)
-        self.mSerialPort.write(bytes(pCommand, 'UTF-8'))
+        self.mSerialPort.write(pCommand)
 
     def SerialReport(self):
         self.mSerialPort.write(b"S\r\n")

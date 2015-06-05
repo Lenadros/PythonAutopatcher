@@ -2,7 +2,9 @@ import sys
 import threading
 import signal
 import os
-from PyQt5.QtWidgets import QApplication
+import cv2
+import numpy as np
+from PyQt4 import QtCore, QtGui, uic
 from MainUI import MainUI
 from StateMachine import StateMachine
 from SystemIO import SystemIO
@@ -15,6 +17,8 @@ class Main(threading.Thread):
     mDoState = 1
     mUIEvent = None
     mZEvent = None
+    mCapture = None
+    mCameraPort = 0
 
     #Global Variables For Access Between States
     mBigTime = 0
@@ -36,8 +40,9 @@ class Main(threading.Thread):
                 self.mDoState = 0
 
 #Create GUI and dispaly it
-mApp = QApplication(sys.argv)
-mMainUIWindow = MainUI()
+mApp = QtGui.QApplication(sys.argv)
+mMainUIWindow = MainUI(None)
+mMainUIWindow.show()
 
 #Create system IO thread 
 mSystemIO = SystemIO(None, None, None, None, None, None, mMainUIWindow)
@@ -50,4 +55,6 @@ mMainThread.start()
 #Pass reference of Main to the GUI thread
 mMainUIWindow.SetMain(mMainThread)
 
-sys.exit(mApp.exec_())
+
+
+mApp.exec_()
