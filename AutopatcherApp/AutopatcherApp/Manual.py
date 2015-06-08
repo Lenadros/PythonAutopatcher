@@ -6,8 +6,8 @@ class Manual(State):
     mNumClicks = 0
     mCounter = 0
 
-    def __init__(self, pMainWindow = None, pMain = None,  pSystemIO = None, pName = ""):
-        super().__init__(pMainWindow, pMain, pSystemIO, pName)
+    def __init__(self, pMain = None,  pSystemIO = None, pName = ""):
+        super().__init__(pMain, pSystemIO, pName)
         print('Created: Manual State')
 
     def Start(self):

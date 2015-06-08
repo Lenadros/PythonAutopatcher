@@ -1,8 +1,8 @@
 import os
 import threading
-import serial
-import numpy as np
-import cv2
+#import serial
+#import numpy as np
+#import cv2
 import ctypes
 
 class SystemIO(threading.Thread):
@@ -47,4 +47,10 @@ class SystemIO(threading.Thread):
     def SerialReport(self):
         self.mSerialPort.write(b"S\r\n")
         return self.mSerialPort.read().decode()
+
+    #----------------------------------------------
+    # Bridge Functions Between UI and State Machine
+    #----------------------------------------------
+    def UIWriteTitle(self, pString):
+        self.mMainWindow.WriteTitle(pString)
 

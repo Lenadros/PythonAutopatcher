@@ -2,20 +2,17 @@ from State import State
 from Automatic import Automatic
 from Manual import Manual
 #from MainUI import MainUI
-from enum import Enum
-
-
-class Process(Enum):
-    START = 1;
-    EXECUTE = 2;
-    END = 3;
 
 class StateMachine(object):
     #State machine control variables
     mStateCounter = 0
     mStateList = []
     mCurrentState = None
-    mCurrentProcess = None
+    
+    # START - 0
+    # EXECUTE - 1
+    # END -2
+    mCurrentProcess = 0
 
     #Reference variables
     mMainUIWindow = None
@@ -27,39 +24,37 @@ class StateMachine(object):
         self.mMainUIWindow = pMainWindow
         self.mMain = pMain
         self.mSystemIO = pSystemIO
-        self.mCurrentProcess = Process.START
         self.mStateCounter = 0
 
-        self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, self.mSystemIO, "Auto State One", 5000))
-        self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, self.mSystemIO, "Auto State Two", -6000))
-        self.mStateList.append(Automatic(self.mMainUIWindow, self.mMain, self.mSystemIO, "Auto State Three", 5000))
+        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State One", 5000))
+        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State Two", -6000))
+        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State Three", 5000))
 
         print('StateMachine Initialized With ' + str(len(self.mStateList)) + ' States')
 
 
     #Main update for state machine
     def Update(self):
-        if(self.mCurrentProcess == Process.START):
+        if(self.mCurrentProcess == 0):
             if(len(self.mStateList) < self.mStateCounter + 1):
                 print('StateMachine: Ended')
-                self.mMainUIWindow.DisplayCurrentState("END")
+                self.mSystemIO.UIWriteTitle("END")
                 return 0
             else:
                 self.mCurrentState = self.mStateList[self.mStateCounter]
                 self.mStateCounter += 1
                 self.mCurrentState.Start()
-                self.mMainUIWindow.DisplayCurrentState(self.mCurrentState.mStateName)
-                self.mCurrentProcess = Process.EXECUTE
+                self.mCurrentProcess = 1
                 return 1
 
-        elif(self.mCurrentProcess == Process.EXECUTE):
+        elif(self.mCurrentProcess == 1):
             if(self.mCurrentState.Update()):
                 print('StateMachine: Current State Has Ended')
-                self.mCurrentProcess = Process.END
+                self.mCurrentProcess = 2
         
-        elif(self.mCurrentProcess == Process.END):
+        elif(self.mCurrentProcess == 2):
             self.mCurrentState.End()
-            self.mCurrentProcess = Process.START
+            self.mCurrentProcess = 0
            
 
 

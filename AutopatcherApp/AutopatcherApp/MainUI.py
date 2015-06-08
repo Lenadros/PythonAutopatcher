@@ -10,7 +10,8 @@ class MainUI(QtGui.QMainWindow):
 
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)
-        self.ui = uic.loadUi('D:\Autopatcher Python\PythonAutopatcher\MainUI.ui',self)
+        #self.ui = uic.loadUi('D:\Autopatcher Python\PythonAutopatcher\MainUI.ui',self)
+        self.ui = uic.loadUi('C:\Users\Leonard\Documents\PythonAutopatcher\MainUI.ui',self)
         self.show()
         self.ui.pushButton.clicked.connect(self.OnNextButtonClicked)
         self.ui.pushButton_2.clicked.connect(self.OnZButtonClicked)
@@ -30,8 +31,8 @@ class MainUI(QtGui.QMainWindow):
         self.mMain.mZEvent.set()
         self.mMain.mZEvent.clear()
 
-    def DisplayCurrentState(self, pStateName):
-        self.ui.label.setText(pStateName)
+    def WriteTitle(self, pString):
+        self.ui.label.setText(pString)
 
     def DisplayData(self, isTime, pData):
         if(isTime):

@@ -2,8 +2,6 @@ import sys
 import threading
 import signal
 import os
-import cv2
-import numpy as np
 from PyQt4 import QtCore, QtGui, uic
 from MainUI import MainUI
 from StateMachine import StateMachine
@@ -34,7 +32,7 @@ class Main(threading.Thread):
     #Run state machine in main loop
     def run(self):
         self.mUIEvent.wait()
-        self.mSystemIO.OpenPort()
+        #self.mSystemIO.OpenPort()
         while(self.mDoState):
             if(self.mStateMachine.Update() == 0):
                 self.mDoState = 0
