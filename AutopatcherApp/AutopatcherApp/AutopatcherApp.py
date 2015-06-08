@@ -13,10 +13,9 @@ class Main(threading.Thread):
     mStateMachine = None
     mSystemIO = None
     mDoState = 1
-    mUIEvent = None
-    mZEvent = None
     mCapture = None
     mCameraPort = 0
+    mUIQueue = []
 
     #Global Variables For Access Between States
     mBigTime = 0
@@ -25,17 +24,16 @@ class Main(threading.Thread):
         threading.Thread.__init__(self)
         self.mStateMachine = StateMachine(pMainWindow, self, pSystemIO)
         self.mDoState = 1
-        self.mUIEvent = threading.Event()
-        self.mZEvent = threading.Event()
         self.mSystemIO = pSystemIO
     
     #Run state machine in main loop
     def run(self):
-        self.mUIEvent.wait()
-        #self.mSystemIO.OpenPort()
-        while(self.mDoState):
-            if(self.mStateMachine.Update() == 0):
-                self.mDoState = 0
+        while(1):
+            if(len(self.mUIQueue) != 0 and self.mUIQueue.pop().text() == "Start"):
+                self.mSystemIO.OpenPort()
+                while(self.mDoState):
+                    if(self.mStateMachine.Update() == 0):
+                        self.mDoState = 0
 
 #Create GUI and dispaly it
 mApp = QtGui.QApplication(sys.argv)

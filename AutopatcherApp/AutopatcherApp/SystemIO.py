@@ -1,7 +1,8 @@
 import os
 import threading
-#import serial
-#import numpy as np
+import serial
+from PyDAQmx import *
+import numpy
 #import cv2
 import ctypes
 
@@ -14,6 +15,7 @@ class SystemIO(threading.Thread):
     def __init__(self, group = None, target = None, name = None, args = (), kwargs = None, daemon = None, pMainWindow = None):
         threading.Thread.__init__(self)
         self.mMainWindow = pMainWindow
+        self.FindAvaliblePorts()
 
     def run(self):
         while(1):

@@ -25,8 +25,8 @@ class Automatic(State):
         self.mStartTime = time.time()
         #self.mMainUIWindow.SendMessage("Please Wait " + str(self.mSetTime) + " Second(s)")
 
-    def Update(self):
-        super(Automatic, self).Update()
+    def Update(self, pSender):
+        super(Automatic, self).Update(pSender)
         #Update timer
         self.mEndTime = time.time()
         self.mElapsedTime = self.mEndTime - self.mStartTime

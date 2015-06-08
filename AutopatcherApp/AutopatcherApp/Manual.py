@@ -7,34 +7,34 @@ class Manual(State):
     mCounter = 0
 
     def __init__(self, pMain = None,  pSystemIO = None, pName = ""):
-        super().__init__(pMain, pSystemIO, pName)
+        super(Manual, self).__init__(pMain, pSystemIO, pName)
         print('Created: Manual State')
 
     def Start(self):
-        super().Start()
+        super(Manual, self).Start()
         #Determine how many times the user must click from global varaible BigTime
-        self.mNumClicks = self.mMain.mBigTime
-        self.mMainUIWindow.SendMessage("Press 'Next' " + str(self.mNumClicks) + ' Time(s) to Contine')
-        self.mMainUIWindow.DisplayData(0, self.mCounter)
+        self.mSystemIO.UIWriteTitle(self.mStateName)
 
-    def Update(self):
-        super().Update()
+    def Update(self, pSender):
+        super(Manual, self).Update(pSender)
 
         #Wait for event from UI
-        print('ManualState: Waiting for button press')
-        self.mMain.mZEvent.wait()
-        #self.mSystemIO.MoveZ()
-        print('ManualState: Got button press')
-        self.mCounter += 1
-        self.mMainUIWindow.DisplayData(0, self.mCounter)
+        if(self.mButtonSender != None):
+            if(self.mButtonSender.text() == "Move Z"):
+                print "Input Recieved"
+                self.mSystemIO.SerialWrite("RELZ " + str(-5000))
+
+            if(self.mButtonSender.text() == "End Manual"):
+                print "Manual State Forcefully Ended"
+                return 1
 
         #If the user has clicked the right amount of times, return 1
-        if(self.mCounter == self.mNumClicks):
-            return 1
+        #if(self.mCounter == self.mNumClicks):
+        #    return 1
 
         return 0
 
     def End(self):
-        super().End()
+        super(Manual, self).End()
 
 

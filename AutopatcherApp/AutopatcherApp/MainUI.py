@@ -10,11 +10,12 @@ class MainUI(QtGui.QMainWindow):
 
     def __init__(self, parent = None):
         QtGui.QMainWindow.__init__(self, parent)
-        #self.ui = uic.loadUi('D:\Autopatcher Python\PythonAutopatcher\MainUI.ui',self)
-        self.ui = uic.loadUi('C:\Users\Leonard\Documents\PythonAutopatcher\MainUI.ui',self)
+        self.ui = uic.loadUi('D:\Autopatcher Python\PythonAutopatcher\MainUI.ui',self)
+        #self.ui = uic.loadUi('C:\Users\Leonard\Documents\PythonAutopatcher\MainUI.ui',self)
         self.show()
-        self.ui.pushButton.clicked.connect(self.OnNextButtonClicked)
-        self.ui.pushButton_2.clicked.connect(self.OnZButtonClicked)
+        self.ui.pushButton.clicked.connect(self.OnButtonClicked)
+        self.ui.pushButton_2.clicked.connect(self.OnButtonClicked)
+        self.ui.pushButton_3.clicked.connect(self.OnButtonClicked)
 
 
     #----------------------------------------------------------
@@ -23,13 +24,9 @@ class MainUI(QtGui.QMainWindow):
     def SetMain(self, pMain = None):
         self.mMain = pMain
 
-    def OnNextButtonClicked(self):
-        self.mMain.mUIEvent.set()
-        self.mMain.mUIEvent.clear()
-
-    def OnZButtonClicked(self):
-        self.mMain.mZEvent.set()
-        self.mMain.mZEvent.clear()
+    def OnButtonClicked(self):
+        print self.sender().text()
+        self.mMain.mUIQueue.append(self.sender())
 
     def WriteTitle(self, pString):
         self.ui.label.setText(pString)

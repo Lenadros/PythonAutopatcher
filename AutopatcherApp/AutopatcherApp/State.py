@@ -4,6 +4,7 @@ class State(object):
     mStateName = "State"
     mMain = None
     mSystemIO = None
+    mButtonSender = None
 
     def __init__(self, pMain = None, pSystemIO = None, pName = "State"):
         self.mStateName = pName
@@ -16,8 +17,8 @@ class State(object):
         print('State: Started')
 
     #Main Update for State
-    def Update(self):
-        self.mDummyTest = 1
+    def Update(self, pSender):
+        self.mButtonSender = pSender
 
     #State End Process
     def End(start):
