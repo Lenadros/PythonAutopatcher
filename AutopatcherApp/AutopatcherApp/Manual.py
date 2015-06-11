@@ -22,7 +22,7 @@ class Manual(State):
         if(self.mButtonSender != None):
             if(self.mButtonSender.text() == "Move Z"):
                 print "Input Recieved"
-                self.mSystemIO.SerialWrite("RELZ " + str(-5000))
+                self.mSystemIO.SMoveXYZRel(0,0,-5000)
 
             if(self.mButtonSender.text() == "End Manual"):
                 print "Manual State Forcefully Ended"
