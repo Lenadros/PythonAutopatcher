@@ -25,7 +25,6 @@ class MainUI(QtGui.QMainWindow):
         self.mMain = pMain
 
     def OnButtonClicked(self):
-        print self.sender().text()
         self.mMain.mUIQueue.append(self.sender())
 
     def WriteTitle(self, pString):

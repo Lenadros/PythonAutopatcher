@@ -21,7 +21,7 @@ class Manual(State):
         if(self.mButtonSender != None):
             if(self.mButtonSender.text() == "Move Z"):
                 print "Input Recieved. Now Moving"
-                self.mSystemIO.SMoveXYZRel(0,0,-5000)
+                self.mSystemIO.SMoveXYZRel(0,0,30000)
                 self.mSystemIO.mMovementEvent.wait()
                 print "Done Moving"
 

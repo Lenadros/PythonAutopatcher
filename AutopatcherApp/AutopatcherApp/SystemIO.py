@@ -19,20 +19,20 @@ class SystemIO(threading.Thread):
         threading.Thread.__init__(self)
         self.mMainWindow = pMainWindow
         self.FindAvaliblePorts()
-        self.mCurrentPos = self.SReportPosition()
-        self.mPrevPos = self.mCurrentPos
 
     def run(self):
         while(1):
-            if(bMovementInit):
+            if(self.bMovementInit == True and self.mSerialPort != None):
                 self.mCurrentPos = self.SReportPosition()
-                if(self.mCurrentPos == self.mPrevPos):
-                    self.bMovementInit = False
+                if(self.mPrevPos != None and self.mPrevPos == self.mCurrentPos):
                     self.mMovementEvent.set()
-                else:
-                    self.mPrevPos = self.mCurrentPos
-            
-    
+                    self.bMovementInit = False
+                self.mPrevPos = self.mCurrentPos
+                #if(pStatus == self.mCurrentPos):
+                
+                #self.mCurrentPos = pStatus
+                
+
     #------------------------------------------------------
     # Serial Command Functions for Scientifica Manipulators
     #------------------------------------------------------
@@ -54,41 +54,51 @@ class SystemIO(threading.Thread):
     #Open GUI selected port
     def OpenPort(self):
         Port = self.mMainWindow.GetSelectedComPort()[3:]
-        self.mSerialPort = serial.Serial(int(Port) - 1)
+        self.mSerialPort = serial.Serial(port = int(Port) - 1, baudrate = 9600, writeTimeout = 0)
         print(Port + " is opened")
 
     def SReportPosition(self):
         self.mSerialPort.write("P\r\n");
-        pMessage = self.mSerialPort.read().decode();
-        print(pMessage)
+        pMessage = ""
+        pChar = self.mSerialPort.readline()
+
+        #while(pChar != "\r"):
+        #    if(pChar == "\t"):
+        #        pMessage += "*"
+        #    else:
+        #        pMessage += pChar
+        #    pChar = self.mSerialPort.read().decode()
+        #
+        #if(pMessage != "" and pMessage[0] != "A"):
+        #    return self.SParseXYZ(pMessage + "*e")
 
     def SSetPosition(self, pX, pY, pZ):
         self.mSerialPort.write("P " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
-        pMessage = self.mSerialPort.read().decode();
+        pMessage = self.mSerialPort.read().decode()
         if(pMessage == "A"):
             return 1
         return 0
 
     def SReportXPos(self):
         self.mSerialPort.write("PX\r\n")
-        pMessage = self.SerialReport.read().decode();
+        pMessage = self.SerialReport.read().decode()
         return pMessage
 
     def SSetXPos(self, pX):
         self.mSerialPort.write("PX " + str(pX) + "\r\n")
-        pMessage = self.mSerialPort.read().decode();
+        pMessage = self.mSerialPort.read().decode()
         if(pMessage == "A"):
             return 1
         return 0
 
     def SReportYPos(self):
         self.mSerialPort.write("PY\r\n")
-        pMessage = self.SerialReport.read().decode();
+        pMessage = self.SerialReport.read().decode()
         return pMessage
 
     def SSetYPos(self, pY):
         self.mSerialPort.write("PY " + str(pY) + "\r\n")
-        pMessage = self.mSerialPort.read().decode();
+        pMessage = self.mSerialPort.read().decode()
         if(pMessage == "A"):
             return 1
         return 0
@@ -329,6 +339,32 @@ class SystemIO(threading.Thread):
         if(pMessage == "A"):
             return 1
         return 0
+
+    def SReportStatus(self):
+        self.mSerialPort.write("S\r\n")
+        pMessage = self.mSerialPort.read().decode();
+        return pMessage
+
+    def SParseXYZ(self, pString):
+        print pString
+        pXYZ = [0,0,0]
+        pNumChar = pString[0]
+        pNum = ""
+        i = 0
+
+        while(pNumChar != "e"):
+            while(pNumChar != "*"):
+                pNum += pNumChar
+                pString = pString[1:]
+                pNumChar = pString[0]
+            pXYZ[i] = float(pNum)/10
+            pString = pString[1:]
+            pNumChar = pString[0]
+            pNum = ""
+            i += 1
+
+        return pXYZ
+
 
     #----------------------------------------------
     # Bridge Functions Between UI and State Machine
