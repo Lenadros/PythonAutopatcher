@@ -19,29 +19,21 @@ class Automatic(State):
 
     def Start(self):
         super(Automatic, self).Start()
-        #self.mSystemIO.SerialWrite("RELZ " + str(self.mSetTime))
         #Start local timer
         self.mSystemIO.UIWriteTitle(self.mStateName)
         self.mStartTime = time.time()
-        #self.mMainUIWindow.SendMessage("Please Wait " + str(self.mSetTime) + " Second(s)")
 
     def Update(self, pSender):
         super(Automatic, self).Update(pSender)
         #Update timer
         self.mEndTime = time.time()
         self.mElapsedTime = self.mEndTime - self.mStartTime
-        #self.mMainUIWindow.DisplayData(1, self.mElapsedTime)
         
         #If timer has reached the required time, return 1
         if(self.mElapsedTime >= 2):
-           # if(self.mSystemIO.SerialReport() == "0"):
-                #self.mMainUIWindow.SendMessage("Manipulator Movement Complete!")
-                return 1
-            #else:
-             #    self.mMainUIWindow.SendMessage("Moving Manipulator...")
-            #return 1
+            return True
 
-        return 0
+        return False
 
     def End(self):
         super(Automatic, self).End()

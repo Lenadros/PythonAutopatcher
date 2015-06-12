@@ -10,16 +10,28 @@ class SystemIO(threading.Thread):
 
     mSerialPort = None
     mMainWindow = None
-    CameraDLL = None
+    mMovementEvent = threading.Event()
+    mCurrentPos = None
+    mPrevPos = None
+    bMovementInit = False
 
     def __init__(self, group = None, target = None, name = None, args = (), kwargs = None, daemon = None, pMainWindow = None):
         threading.Thread.__init__(self)
         self.mMainWindow = pMainWindow
         self.FindAvaliblePorts()
+        self.mCurrentPos = self.SReportPosition()
+        self.mPrevPos = self.mCurrentPos
 
     def run(self):
         while(1):
-            x = 1
+            if(bMovementInit):
+                self.mCurrentPos = self.SReportPosition()
+                if(self.mCurrentPos == self.mPrevPos):
+                    self.bMovementInit = False
+                    self.mMovementEvent.set()
+                else:
+                    self.mPrevPos = self.mCurrentPos
+            
     
     #------------------------------------------------------
     # Serial Command Functions for Scientifica Manipulators
@@ -101,6 +113,7 @@ class SystemIO(threading.Thread):
         return 0
 
     def SMoveXYZAbs(self, pX, pY, pZ):
+        self.bMovementInit = True
         self.mSerialPort.write("ABS " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
         pMessage = self.mSerialPort.read().decode();
         if(pMessage == "A"):
@@ -108,6 +121,7 @@ class SystemIO(threading.Thread):
         return 0
 
     def SMoveXYZRel(self, pX, pY, pZ):
+        self.bMovementInit = True
         self.mSerialPort.write("REL " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
         pMessage = self.mSerialPort.read().decode();
         if(pMessage == "A"):
