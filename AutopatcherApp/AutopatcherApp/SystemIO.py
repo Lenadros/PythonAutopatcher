@@ -3,6 +3,7 @@ import threading
 import serial
 from PyDAQmx import *
 import numpy
+import time
 #import cv2
 import ctypes
 
@@ -24,10 +25,15 @@ class SystemIO(threading.Thread):
         while(1):
             if(self.bMovementInit == True and self.mSerialPort != None):
                 self.mCurrentPos = self.SReportPosition()
-                if(self.mPrevPos != None and self.mPrevPos == self.mCurrentPos):
+                time.sleep(0.02)                   
+                self.mPrevPos = self.SReportPosition()
+                if(self.mCurrentPos != None and self.mPrevPos != None and self.mPrevPos[0] == self.mCurrentPos[0] and self.mPrevPos[1] == self.mCurrentPos[1] and self.mPrevPos[2] == self.mCurrentPos[2]):
                     self.mMovementEvent.set()
+                    self.mMovementEvent.clear()
                     self.bMovementInit = False
-                self.mPrevPos = self.mCurrentPos
+                    #self.mCurrentPos = None
+                    #self.mPrevPos = None
+                
                 #if(pStatus == self.mCurrentPos):
                 
                 #self.mCurrentPos = pStatus
@@ -60,17 +66,13 @@ class SystemIO(threading.Thread):
     def SReportPosition(self):
         self.mSerialPort.write("P\r\n");
         pMessage = ""
-        pChar = self.mSerialPort.readline()
+        pChar = self.mSerialPort.read()
 
-        #while(pChar != "\r"):
-        #    if(pChar == "\t"):
-        #        pMessage += "*"
-        #    else:
-        #        pMessage += pChar
-        #    pChar = self.mSerialPort.read().decode()
-        #
-        #if(pMessage != "" and pMessage[0] != "A"):
-        #    return self.SParseXYZ(pMessage + "*e")
+        while(pChar != "\r"):
+             pMessage += pChar
+             pChar = self.mSerialPort.read().decode()
+        
+        return self.SDecodeXYZ(pMessage + '\r')
 
     def SSetPosition(self, pX, pY, pZ):
         self.mSerialPort.write("P " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
@@ -134,6 +136,7 @@ class SystemIO(threading.Thread):
         self.bMovementInit = True
         self.mSerialPort.write("REL " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
         pMessage = self.mSerialPort.read().decode();
+        self.mCurrentPos = self.SReportPosition()
         if(pMessage == "A"):
             return 1
         return 0
@@ -343,26 +346,33 @@ class SystemIO(threading.Thread):
     def SReportStatus(self):
         self.mSerialPort.write("S\r\n")
         pMessage = self.mSerialPort.read().decode();
+        print pMessage
         return pMessage
 
-    def SParseXYZ(self, pString):
-        print pString
+    def SDecodeXYZ(self, pString):
         pXYZ = [0,0,0]
-        pNumChar = pString[0]
         pNum = ""
         i = 0
 
-        while(pNumChar != "e"):
-            while(pNumChar != "*"):
-                pNum += pNumChar
+        try:
+            pChar = pString[0]
+            while(pChar != '\r'):
                 pString = pString[1:]
-                pNumChar = pString[0]
-            pXYZ[i] = float(pNum)/10
-            pString = pString[1:]
-            pNumChar = pString[0]
-            pNum = ""
-            i += 1
+                pNum += pChar
+                pChar = pString[0]
+                if(pChar == '\t' or pChar == '\r'):
+                    pXYZ[i] = int(pNum)
+                    i += 1
+                    pString = pString[1:]
+                    pNum = ""
+        except Exception:
+            return None
+            pass
+        
+        #if(pXYZ[0] == 0 and pXYZ[1] == 0 and pXYZ[2] == 0):
+         #   return None
 
+        print pXYZ
         return pXYZ
 
 
