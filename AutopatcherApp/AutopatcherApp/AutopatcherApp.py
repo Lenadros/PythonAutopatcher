@@ -51,6 +51,4 @@ mMainThread.start()
 #Pass reference of Main to the GUI thread
 mMainUIWindow.SetMain(mMainThread)
 
-
-
 mApp.exec_()

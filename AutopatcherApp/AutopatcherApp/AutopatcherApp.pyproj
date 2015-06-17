@@ -26,10 +26,16 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="AutopatcherApp.py" />
+    <Compile Include="AutoSquare.py">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MainUI.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Manual.py">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="SerialCom.py">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="State.py">
