@@ -16,7 +16,8 @@ class SystemIO(threading.Thread):
 
     #Main System IO Update Loop
     def run(self):
-        x = 1
+        while(1):
+            x = 1
 
     #----------------------------------------------
     # Bridge Functions Between UI and State Machine

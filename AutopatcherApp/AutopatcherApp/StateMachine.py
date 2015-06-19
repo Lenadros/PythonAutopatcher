@@ -27,9 +27,9 @@ class StateMachine(object):
         self.mStateCounter = 0
 
         self.mStateList.append(Manual(self.mMain, self.mSystemIO, "Manual State One"))
-        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State One", 5000))
-        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State Two", -6000))
-        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State Three", 5000))
+        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State One"))
+        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State Two"))
+        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State Three"))
 
         print('StateMachine Initialized With ' + str(len(self.mStateList)) + ' States')
 
