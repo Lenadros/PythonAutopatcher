@@ -27,9 +27,6 @@ class StateMachine(object):
         self.mStateCounter = 0
 
         self.mStateList.append(Manual(self.mMain, self.mSystemIO, "Manual State One"))
-        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State One"))
-        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State Two"))
-        self.mStateList.append(Automatic(self.mMain, self.mSystemIO, "Auto State Three"))
 
         print('StateMachine Initialized With ' + str(len(self.mStateList)) + ' States')
 
@@ -53,16 +50,11 @@ class StateMachine(object):
 
             if(len(self.mMain.mUIQueue) != 0):
                 pSender = self.mMain.mUIQueue.pop()
-
-            if(self.mCurrentState.Update(pSender)):
+            if(self.mCurrentState.Update(pSender) == False):
                 print('StateMachine: Current State Has Ended')
                 self.mCurrentProcess = 2
+            self.mMain.mUIQueue = []
         
         elif(self.mCurrentProcess == 2):
             self.mCurrentState.End()
             self.mCurrentProcess = 0
-           
-
-
-
-

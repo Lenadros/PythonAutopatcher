@@ -65,11 +65,6 @@ class SerialCom(threading.Thread):
             return 1
         return 0
 
-    def SReportXPos(self):
-        self.mSerialPort.write("PX\r\n")
-        pMessage = self.SerialReport.read().decode()
-        return pMessage
-
     def SSetXPos(self, pX):
         self.mSerialPort.write("PX " + str(pX) + "\r\n")
         pMessage = self.mSerialPort.read().decode()
@@ -77,22 +72,12 @@ class SerialCom(threading.Thread):
             return 1
         return 0
 
-    def SReportYPos(self):
-        self.mSerialPort.write("PY\r\n")
-        pMessage = self.SerialReport.read().decode()
-        return pMessage
-
     def SSetYPos(self, pY):
         self.mSerialPort.write("PY " + str(pY) + "\r\n")
         pMessage = self.mSerialPort.read().decode()
         if(pMessage == "A"):
             return 1
         return 0
-
-    def SReportZPos(self):
-        self.mSerialPort.write("PZ\r\n")
-        pMessage = self.SerialReport.read().decode();
-        return pMessage
 
     def SSetZPos(self, pZ):
         self.mSerialPort.write("PZ " + str(pZ) + "\r\n")

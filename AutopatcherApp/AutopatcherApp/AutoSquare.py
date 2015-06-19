@@ -10,6 +10,7 @@ class AutoSquare(Automatic):
 
     def Start(self):
         super(AutoSquare, self).Start()
+        self.mSystemIO.UIWriteTitle(self.mStateName)
 
     def Update(self, pSender):
         super(AutoSquare, self).Update(pSender)
@@ -26,6 +27,11 @@ class AutoSquare(Automatic):
             self.mSystemIO.mSerialCom.SMoveXYZRel(0, -5000, 0)
             self.mSystemIO.mSerialCom.mMovementEvent.wait()
         mStep += 1
+
+        if(self.mButtonSender.text() == "Stop"):
+            return False
+
+        return True
 
     def End(self):
         super(AutoSquare, self).End()
