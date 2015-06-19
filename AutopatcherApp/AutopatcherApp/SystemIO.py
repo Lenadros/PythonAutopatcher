@@ -11,7 +11,7 @@ class SystemIO(threading.Thread):
     def __init__(self, group = None, target = None, name = None, args = (), kwargs = None, daemon = None, pMainWindow = None):
         threading.Thread.__init__(self)
         self.mMainWindow = pMainWindow
-        self.mSerialCom = SerialCom()
+        self.mSerialCom = SerialCom(self.mMainWindow)
         self.mSerialCom.start()
 
     #Main System IO Update Loop

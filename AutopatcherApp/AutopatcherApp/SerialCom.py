@@ -104,10 +104,7 @@ class SerialCom(threading.Thread):
     def SMoveXYZRel(self, pX, pY, pZ):
         self.mSerialPort.write("REL " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
         pPass = self.SReadSerialMessage()
-        print pPass
         if(pPass == "A"):
-            print "Message Passed. Proceeding with Movement..."
-            time.sleep(0.2)
             self.bMovementInit = True
             return True
         return False
@@ -320,7 +317,7 @@ class SerialCom(threading.Thread):
         print pMessage
         return pMessage
 
-    def SReadSerialMessage():
+    def SReadSerialMessage(self):
         pMessage = ""
         pChar = self.mSerialPort.read()
         while(pChar != "\r"):

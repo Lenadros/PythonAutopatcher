@@ -21,7 +21,7 @@ class Manual(State):
         if(self.mButtonSender != None):
             if(self.mButtonSender.text() == "Move Z"):
                 print "Input Recieved. Now Moving"
-                if(self.mSystemIO.SMoveXYZRel(0,0,-30000)):
+                if(self.mSystemIO.mSerialCom.SMoveXYZRel(0,0,-30000)):
                     self.mSystemIO.mSerialCom.mMovementEvent.wait()
                     print "Done Moving"
                 else:
@@ -29,9 +29,9 @@ class Manual(State):
 
             if(self.mButtonSender.text() == "End Manual"):
                 print "Manual State Forcefully Ended"
-                return True
+                return False
 
-        return False
+        return True
 
     def End(self):
         super(Manual, self).End()

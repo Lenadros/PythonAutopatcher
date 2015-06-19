@@ -1,7 +1,7 @@
 from State import State
 from Automatic import Automatic
 from Manual import Manual
-#from MainUI import MainUI
+from AutoSquare import AutoSquare
 
 class StateMachine(object):
     #State machine control variables
@@ -26,6 +26,7 @@ class StateMachine(object):
         self.mSystemIO = pSystemIO
         self.mStateCounter = 0
 
+        self.mStateList.append(AutoSquare(self.mMain, self.mSystemIO, "Auto Square State"))
         self.mStateList.append(Manual(self.mMain, self.mSystemIO, "Manual State One"))
 
         print('StateMachine Initialized With ' + str(len(self.mStateList)) + ' States')
@@ -53,7 +54,6 @@ class StateMachine(object):
             if(self.mCurrentState.Update(pSender) == False):
                 print('StateMachine: Current State Has Ended')
                 self.mCurrentProcess = 2
-            self.mMain.mUIQueue = []
         
         elif(self.mCurrentProcess == 2):
             self.mCurrentState.End()
