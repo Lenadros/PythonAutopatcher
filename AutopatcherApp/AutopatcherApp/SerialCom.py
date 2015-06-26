@@ -5,22 +5,23 @@ import serial
 
 class SerialCom(threading.Thread):
     
-    mMainWindow = None
+    mSystemIO = None
     mSerialPort = None
     bMovementInit = False
     mMovementEvent = threading.Event()
     mCurrentPos = None
     mPrevPos = None
 
-    def __init__(self, pMainWindow = None):
+    def __init__(self, pSystemIO = None):
         threading.Thread.__init__(self)
-        self.mMainWindow = pMainWindow
+        self.mSystemIO = pSystemIO
         self.FindAvaliblePorts()
 
     def run(self):
         while(1):
             if(self.bMovementInit == True and self.mSerialPort != None):
                 self.mCurrentPos = self.SReportPosition()
+                self.mSystemIO.UIWritePosition(self.mCurrentPos)
                 if(self.mCurrentPos != None and self.mPrevPos != None and self.mCurrentPos == self.mPrevPos):
                     self.mMovementEvent.set()
                     self.mMovementEvent.clear()
@@ -42,11 +43,11 @@ class SerialCom(threading.Thread):
             except(OSError, serial.SerialException):
                 pass
 
-        self.mMainWindow.FillComPortList(PortList)
+        self.mSystemIO.UIFillComList(PortList)
 
     #Open the user selected port
     def OpenPort(self):
-        Port = self.mMainWindow.GetSelectedComPort()[3:]
+        Port = self.mSystemIO.UIFillComList()
         self.mSerialPort = serial.Serial(port = int(Port) - 1, baudrate = 9600, writeTimeout = 0)
         print("COM" + Port + " is opened")
     

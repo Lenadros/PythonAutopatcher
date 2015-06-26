@@ -30,6 +30,9 @@ class MainUI(QtGui.QMainWindow):
     def WriteTitle(self, pString):
         self.ui.label.setText(pString)
 
+    def WriteData(self, pString):
+        self.ui.label_2.setText(pString)
+
     def DisplayData(self, isTime, pData):
         if(isTime):
             self.ui.label_2.setText(str(int(pData)) + " Second(s)")
