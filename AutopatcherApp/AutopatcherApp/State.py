@@ -21,5 +21,5 @@ class State(object):
         self.mButtonSender = pSender
 
     #State End Process
-    def End(start):
+    def End(self,start):
         print('State: Ended')

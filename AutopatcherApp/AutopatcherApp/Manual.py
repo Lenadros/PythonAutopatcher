@@ -12,26 +12,10 @@ class Manual(State):
 
     def Start(self):
         super(Manual, self).Start()
-        self.mSystemIO.UIWriteTitle(self.mStateName)
 
     def Update(self, pSender):
         super(Manual, self).Update(pSender)
 
-        #Wait for event from UI
-        if(self.mButtonSender != None):
-            if(self.mButtonSender.text() == "Move Z"):
-                print "Input Recieved. Now Moving"
-                if(self.mSystemIO.mSerialCom.SMoveXYZRel(0,0,-30000)):
-                    self.mSystemIO.mSerialCom.mMovementEvent.wait()
-                    print "Done Moving"
-                else:
-                    print "Error! Manipulator was unable to move."
-
-            if(self.mButtonSender.text() == "End Manual"):
-                print "Manual State Forcefully Ended"
-                return False
-
-        return True
 
     def End(self):
         super(Manual, self).End()
