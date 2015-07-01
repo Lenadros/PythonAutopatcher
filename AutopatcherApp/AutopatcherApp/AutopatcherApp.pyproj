@@ -5,13 +5,14 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>3992b27b-deec-4043-ada7-746d2f7aef57</ProjectGuid>
     <ProjectHome>.</ProjectHome>
-    <StartupFile>AutopatcherApp.py</StartupFile>
+    <StartupFile>drivers\QImaging\qi_test.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
     <Name>AutopatcherApp</Name>
     <RootNamespace>AutopatcherApp</RootNamespace>
+    <IsWindowsApplication>False</IsWindowsApplication>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -29,6 +30,17 @@
     <Compile Include="AutoSquare.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="devices\PVCam\PVCam.py" />
+    <Compile Include="devices\PVCam\__init__.py" />
+    <Compile Include="devices\QCam\QCam.py" />
+    <Compile Include="devices\QCam\__init__.py" />
+    <Compile Include="drivers\pvcam\pvcam.py" />
+    <Compile Include="drivers\pvcam\test.py" />
+    <Compile Include="drivers\pvcam\__init__.py" />
+    <Compile Include="drivers\QImaging\QImagingDriver.py" />
+    <Compile Include="drivers\QImaging\qi_test.py" />
+    <Compile Include="drivers\QImaging\__init__.py" />
+    <Compile Include="imaging\testCam.py" />
     <Compile Include="MainUI.py">
       <SubType>Code</SubType>
     </Compile>
@@ -47,6 +59,46 @@
     <Compile Include="SystemIO.py">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="util\clibrary\CLibrary.py" />
+    <Compile Include="util\clibrary\CParser.py" />
+    <Compile Include="util\clibrary\__init__.py" />
+    <Compile Include="util\ptime.py" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="devices\" />
+    <Folder Include="devices\PVCam\" />
+    <Folder Include="devices\QCam\" />
+    <Folder Include="drivers\" />
+    <Folder Include="drivers\pvcam\" />
+    <Folder Include="drivers\QImaging\" />
+    <Folder Include="imaging\" />
+    <Folder Include="util\" />
+    <Folder Include="util\clibrary\" />
+    <Folder Include="util\clibrary\headers\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="drivers\pvcam\gpl-license" />
+    <Content Include="drivers\pvcam\master.h" />
+    <Content Include="drivers\pvcam\pvcam.h" />
+    <Content Include="drivers\pvcam\pvcam_headers.cache" />
+    <Content Include="drivers\QImaging\QCamApi.h" />
+    <Content Include="drivers\QImaging\QCamApi.h.cache" />
+    <Content Include="drivers\QImaging\QCamImgfnc.h" />
+    <Content Include="drivers\QImaging\QImagingDriver.pyc" />
+    <Content Include="drivers\QImaging\QImgTypes.h" />
+    <Content Include="util\clibrary\CSyntaxTree" />
+    <Content Include="util\clibrary\headers\BaseTsd.h" />
+    <Content Include="util\clibrary\headers\BaseTyps.h" />
+    <Content Include="util\clibrary\headers\WinBase.h" />
+    <Content Include="util\clibrary\headers\WinDef.h" />
+    <Content Include="util\clibrary\headers\WinDefs.cache" />
+    <Content Include="util\clibrary\headers\WinNt.h" />
+    <Content Include="util\clibrary\headers\WinNtTypes.h" />
+    <Content Include="util\clibrary\headers\WinUser.h" />
+    <Content Include="util\clibrary\headers\WinUserAbridged.h" />
+    <Content Include="util\clibrary\headers\WTypes.h" />
+    <Content Include="util\clibrary\license.txt" />
+    <Content Include="util\clibrary\testHeader.h" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

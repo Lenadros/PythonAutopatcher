@@ -2,12 +2,12 @@ import sys, os
 if __name__ == '__main__':
     d = os.path.dirname(__file__)
     sys.path.append(os.path.join(d, '../../util'))
-    
-import acq4.util.ptime as ptime
+
+import ptime
 from ctypes import *
-from acq4.util.clibrary import *
+from clibrary import *
 from numpy import empty, uint16, ascontiguousarray, concatenate, newaxis
-from acq4.pyqtgraph import graphicsWindows as gw
+from pyqtgraph import graphicsWindows as gw
 from PyQt4 import QtGui
 from acq4.util.Mutex import Mutex, MutexLocker
 from collections import OrderedDict
