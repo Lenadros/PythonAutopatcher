@@ -30,7 +30,7 @@ class Main(threading.Thread):
     def run(self):
         while(1):
             if(len(self.mUIQueue) != 0 and self.mUIQueue.pop().text() == "Start"):
-                self.mSystemIO.mSerialCom.OpenPort()
+                self.mSystemIO.OpenPorts()
                 while(self.mDoState):
                     if(self.mStateMachine.Update() == 0):
                         self.mDoState = 0

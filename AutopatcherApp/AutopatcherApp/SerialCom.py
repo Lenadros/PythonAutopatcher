@@ -8,87 +8,64 @@ class SerialCom(threading.Thread):
     mSystemIO = None
     mSerialPort = None
     bMovementInit = False
-    mMovementEvent = threading.Event()
+    mMovementEvent = None
     mCurrentPos = None
     mPrevPos = None
 
-    def __init__(self, pSystemIO = None):
+    def __init__(self, pSystemIO = None, pSerialPort = None, pEvent = None):
         threading.Thread.__init__(self)
         self.mSystemIO = pSystemIO
-        self.FindAvaliblePorts()
+        self.mSerialPort = pSerialPort
+        self.mMovementEvent = pEvent
 
     def run(self):
         while(1):
             if(self.bMovementInit == True and self.mSerialPort != None):
                 self.mCurrentPos = self.SReportPosition()
-                self.mSystemIO.UIWritePosition(self.mCurrentPos)
+                #self.mSystemIO.UIWritePosition(self.mCurrentPos)
                 if(self.mCurrentPos != None and self.mPrevPos != None and self.mCurrentPos == self.mPrevPos):
                     self.mMovementEvent.set()
-                    self.mMovementEvent.clear()
                     self.bMovementInit = False
-                    #self.mCurrentPos = None
-                    #self.mPrevPos = None
                 self.mPrevPos = self.mCurrentPos
-                #time.sleep(0.05)
-
-    #List avalible ports on the computer
-    def FindAvaliblePorts(self):
-        AllPorts = ['COM' + str(i + 1) for i in range(256)]
-        PortList = []
-        for Port in AllPorts:
-            try:
-                mSerialPort = serial.Serial(Port)
-                mSerialPort.close()
-                PortList.append(Port)
-            except(OSError, serial.SerialException):
-                pass
-
-        self.mSystemIO.UIFillComList(PortList)
-
-    #Open the user selected port
-    def OpenPort(self):
-        Port = self.mSystemIO.UIFillComList()
-        self.mSerialPort = serial.Serial(port = int(Port) - 1, baudrate = 9600, writeTimeout = 0)
-        print("COM" + Port + " is opened")
     
     #------------------------------
     # Scientifica Command Functions
     #------------------------------
     def SReportPosition(self):
-        self.mSerialPort.write("P\r\n");
+        self.SSendSerialMessage("P\r\n");
         pPosition = self.SReadSerialMessage()
         return self.SDecodeXYZ(pPosition + '\r')
 
     def SSetPosition(self, pX, pY, pZ):
-        self.mSerialPort.write("P " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
+        self.SSendSerialMessage("P " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SSetXPos(self, pX):
-        self.mSerialPort.write("PX " + str(pX) + "\r\n")
+        self.SSendSerialMessage("PX " + str(pX) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SSetYPos(self, pY):
-        self.mSerialPort.write("PY " + str(pY) + "\r\n")
+        self.SSendSerialMessage("PY " + str(pY) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SSetZPos(self, pZ):
-        self.mSerialPort.write("PZ " + str(pZ) + "\r\n")
+        self.SSendSerialMessage("PZ " + str(pZ) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SZeroPos(self):
-        self.mSerialPort.write("ZERO\r\n")
+        self.SSendSerialMessage("ZERO\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
@@ -96,7 +73,7 @@ class SerialCom(threading.Thread):
 
     def SMoveXYZAbs(self, pX, pY, pZ):
         self.bMovementInit = True
-        self.mSerialPort.write("ABS " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
+        self.SSendSerialMessage("ABS " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             self.bMovementInit = True
@@ -104,7 +81,7 @@ class SerialCom(threading.Thread):
         return False
 
     def SMoveXYZRel(self, pX, pY, pZ):
-        self.mSerialPort.write("REL " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
+        self.SSendSerialMessage("REL " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             self.bMovementInit = True
@@ -112,202 +89,202 @@ class SerialCom(threading.Thread):
         return False
 
     def SVirtualJoy(self, pX, pY, pZ):
-        self.mSerialPort.write("VJ " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
+        self.SSendSerialMessage("VJ " + str(pX) + " " + str(pY) + " " + str(pZ) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SVirtualJoyScaled(self, pX, pY, pZ, pScale):
-        self.mSerialPort.write("VJ " + str(pX) + " " + str(pY) + " " + str(pZ) + " " + pScale + "\r\n")
+        self.SSendSerialMessage("VJ " + str(pX) + " " + str(pY) + " " + str(pZ) + " " + pScale + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SStep(self):
-        self.mSerialPort.write("STEP\r\n")
+        self.SSendSerialMessage("STEP\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SStop(self):
-        self.mSerialPort.write("STOP\r\n")
+        self.SSendSerialMessage("STOP\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetAccelDecel(self):
-        self.mSerialPort.write("ACC\r\n")
+        self.SSendSerialMessage("ACC\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetAccelDecel(self, pA):
-        self.mSerialPort.write("ACC " + str(pA) + "\r\n")
+        self.SSendSerialMessage("ACC " + str(pA) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetStartSpeed(self):
-        self.mSerialPort.write("FIRST\r\n")
+        self.SSendSerialMessage("FIRST\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetStartSpeed(self, pS):
-        self.mSerialPort.write("FIRST " + str(pS) + "\r\n")
+        self.SSendSerialMessage("FIRST " + str(pS) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetCDAccelDecel(self):
-        self.mSerialPort.write("JACC\r\n")
+        self.SSendSerialMessage("JACC\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetCDAccelDecel(self, pA):
-        self.mSerialPort.write("JACC " + str(pA) + "\r\n")
+        self.SSendSerialMessage("JACC " + str(pA) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetTopSpeed(self):
-        self.mSerialPort.write("TOP\r\n")
+        self.SSendSerialMessage("TOP\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetTopSpeed(self, pS):
-        self.mSerialPort.write("TOP " + str(pS) + "\r\n")
+        self.SSendSerialMessage("TOP " + str(pS) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGoHomeInPos(self):
-        self.mSerialPort.write("IN\r\n")
+        self.SSendSerialMessage("IN\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetHomeInType(self):
-        self.mSerialPort.write("INSET\r\n")
+        self.SSendSerialMessage("INSET\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetHomeInType(self, pP):
-        self.mSerialPort.write("INSET " + str(pP) + "\r\n")
+        self.SSendSerialMessage("INSET " + str(pP) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SSetStepSize(self, pD):
-        self.mSerialPort.write("SETSTEP " + str(pD) + "\r\n")
+        self.SSendSerialMessage("SETSTEP " + str(pD) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGoHomeOutPos(self):
-        self.mSerialPort.write("OUT\r\n")
+        self.SSendSerialMessage("OUT\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SSetHomeOutPos(self):
-        self.mSerialPort.write("SET\r\n")
+        self.SSendSerialMessage("SET\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetObjective(self):
-        self.mSerialPort.write("OBJ\r\n")
+        self.SSendSerialMessage("OBJ\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetObjective(self, pO):
-        self.mSerialPort.write("TOP " + str(pO) + "\r\n")
+        self.SSendSerialMessage("TOP " + str(pO) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetObjChangeSpeed(self):
-        self.mSerialPort.write("OBJS\r\n")
+        self.SSendSerialMessage("OBJS\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetObjChangeSpeed(self, pS):
-        self.mSerialPort.write("OBJS " + str(pS) + "\r\n")
+        self.SSendSerialMessage("OBJS " + str(pS) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetObjLifeDis(self, pO):
-        self.mSerialPort.write("OBJL " + str(pO) + "\r\n")
+        self.SSendSerialMessage("OBJL " + str(pO) + "\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetObjLifeDis(self, pO, pD):
-        self.mSerialPort.write("OBJL " + str(pO) + " " + str(pD) + "\r\n")
+        self.SSendSerialMessage("OBJL " + str(pO) + " " + str(pD) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SObjUp(self, pO):
-        self.mSerialPort.write("OBJU " + str(pO) + "\r\n")
+        self.SSendSerialMessage("OBJU " + str(pO) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SObjDown(self, pO):
-        self.mSerialPort.write("OBJD " + str(pO) + "\r\n")
+        self.SSendSerialMessage("OBJD " + str(pO) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SQueryMode(self):
-        self.mSerialPort.write("?\r\n")
+        self.SSendSerialMessage("?\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SGetApproachAngle(self):
-        self.mSerialPort.write("ANGLE\r\n")
+        self.SSendSerialMessage("ANGLE\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetManAppAngle(self, pA):
-        self.mSerialPort.write("ANGLE " + str(pA) + "\r\n")
+        self.SSendSerialMessage("ANGLE " + str(pA) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SSetAutoAppAngle(self):
-        self.mSerialPort.write("ANGLE A\r\n")
+        self.SSendSerialMessage("ANGLE A\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
         return False
 
     def SGetApproachOO(self):
-        self.mSerialPort.write("APPROACH\r\n")
+        self.SSendSerialMessage("APPROACH\r\n")
         pMessage = self.SReadSerialMessage()
         return pMessage
 
     def SSetApproachOO(self, pO):
-        self.mSerialPort.write("APPROACH " + str(pO) + "\r\n")
+        self.SSendSerialMessage("APPROACH " + str(pO) + "\r\n")
         pPass = self.SReadSerialMessage()
         if(pPass == "A"):
             return True
@@ -320,6 +297,9 @@ class SerialCom(threading.Thread):
              pMessage += pChar
              pChar = self.mSerialPort.read().decode()
         return pMessage
+
+    def SSendSerialMessage(self, pMessage):
+        self.mSerialPort.write(pMessage)
 
     #Decode recieved serial message into a XYZ array
     def SDecodeXYZ(self, pString):
@@ -342,5 +322,5 @@ class SerialCom(threading.Thread):
             return None
             pass
 
-        print pXYZ
+        #print pXYZ
         return pXYZ

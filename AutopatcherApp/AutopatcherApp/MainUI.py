@@ -45,8 +45,12 @@ class MainUI(QtGui.QMainWindow):
     def FillComPortList(self, pPorts):
         for port in pPorts:
             self.ui.comboBox.addItem(str(port))
+            self.ui.comboBox_2.addItem(str(port))
 
-    def GetSelectedComPort(self):
-        return self.ui.comboBox.currentText()
+    def GetSelectedComPort(self, pBox):
+        if(pBox == 0):
+            return self.ui.comboBox.currentText()
+        elif(pBox == 1):
+            return self.ui.comboBox_2.currentText()
 
 
